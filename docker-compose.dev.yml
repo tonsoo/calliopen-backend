@@ -1,0 +1,62 @@
+services:
+  php:
+    build: ./docker
+    container_name: "my-app-php-{{BRANCH_NAME}}"
+    environment:
+      SERVER_NAME: ":80"
+    volumes:
+      - .:/app
+    depends_on:
+      - localmysql
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.my-app-hml-{{BRANCH_NAME}}.rule=Host(`{{DOMAIN}}`)
+      - traefik.http.routers.my-app-hml-{{BRANCH_NAME}}.entrypoints=websecure
+      - traefik.http.routers.my-app-hml-{{BRANCH_NAME}}.tls=true
+      - traefik.http.routers.my-app-hml-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
+      - traefik.http.services.my-app-hml-{{BRANCH_NAME}}.loadbalancer.server.port=80
+    networks:
+      - web
+      - sql
+
+  localmysql:
+    image: mysql:8.4
+    container_name: "my-app-mysql-{{BRANCH_NAME}}"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "{{DB_PASSWORD}}"
+      MYSQL_DATABASE: myappdatabase
+      MYSQL_USER: myappuser
+      MYSQL_PASSWORD: "{{DB_PASSWORD}}"
+    volumes:
+      - "{{DATABASE_PERSIST_PATH}}:/var/lib/mysql"
+    networks:
+      - sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "my-app-pma-{{BRANCH_NAME}}"
+    restart: always
+    environment:
+      PMA_HOST: localmysql
+    depends_on:
+      - localmysql
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.my-app-hml-pma-{{BRANCH_NAME}}.rule=Host(`{{PMA_DOMAIN}}`)
+      - traefik.http.routers.my-app-hml-pma-{{BRANCH_NAME}}.entrypoints=websecure
+      - traefik.http.routers.my-app-hml-pma-{{BRANCH_NAME}}.tls=true
+      - traefik.http.routers.my-app-hml-pma-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
+      - traefik.http.services.my-app-hml-pma-{{BRANCH_NAME}}.loadbalancer.server.port=80
+    networks:
+      - web
+      - sql
+
+networks:
+  web:
+    name: web
+    external: true
+
+  sql:
+    name: my-app-hml-db-{{BRANCH_NAME}}
+    internal: true

@@ -1,0 +1,38 @@
+services:
+  php:
+    build: ./docker
+    container_name: my-app-php
+    environment:
+      SERVER_NAME: ":80"
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.4
+    container_name: my-app-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my-app-super-secure-password
+      MYSQL_DATABASE: myappdatabase
+      MYSQL_USER: myappuser
+      MYSQL_PASSWORD: my-app-secure-password
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: my-app-pma
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: myappuser
+      PMA_PASSWORD: my-app-secure-password
+      PMA_ARBITRARY: 1
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
+    driver: local
