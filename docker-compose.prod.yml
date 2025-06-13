@@ -1,7 +1,7 @@
 services:
   php:
     build: ./docker
-    container_name: "my-app-php-{{BRANCH_NAME}}"
+    container_name: "calliopen-php-{{BRANCH_NAME}}"
     environment:
       SERVER_NAME: ":80"
     volumes:
@@ -9,11 +9,11 @@ services:
       - "{{STORAGE_PATH}}:/app/storage"
     labels:
       - traefik.enable=true
-      - traefik.http.routers.my-app-{{BRANCH_NAME}}.rule=Host(`{{DOMAIN}}`)
-      - traefik.http.routers.my-app-{{BRANCH_NAME}}.entrypoints=websecure
-      - traefik.http.routers.my-app-{{BRANCH_NAME}}.tls=true
-      - traefik.http.routers.my-app-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
-      - traefik.http.services.my-app-{{BRANCH_NAME}}.loadbalancer.server.port=80
+      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.rule=Host(`{{DOMAIN}}`)
+      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.entrypoints=websecure
+      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.tls=true
+      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
+      - traefik.http.services.calliopen-{{BRANCH_NAME}}.loadbalancer.server.port=80
     env_file: .env
     networks:
       - web
