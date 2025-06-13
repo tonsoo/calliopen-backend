@@ -19,7 +19,7 @@ jobs:
       domain: calliopen.com.br
       sub-domain: dev # Your dev branches will be accessible at branch.dev.example.com
       add-to-deploys: true # Will create an entry in your deploys lists
-    secrets:
+    # secrets:
       db-password: ${{ secrets.DB_PASSWORD }}
       ssh-host: ${{ secrets.SSH_HOST }}
       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
