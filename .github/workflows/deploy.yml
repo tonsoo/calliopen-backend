@@ -15,11 +15,11 @@ jobs:
   call-deploy:
     uses: tonsoo/deployer/.github/workflows/deploy.laravel.yml@main
     secrets:
-      db-password: ${{ secrets.DB_PASSWORD }}
-      ssh-host: ${{ secrets.SSH_HOST }}
-      ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      ssh-user: ${{ secrets.SSH_USER }}
-      deploy-path: ${{ secrets.DEPLOY_PATH }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
     with:
       repo: tonsoo/calliopen-backend
       domain: calliopen.com.br
