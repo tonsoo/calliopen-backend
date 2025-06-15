@@ -6,13 +6,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/debug-session', function () {
-    return response()->json([
-        'secure' => request()->isSecure(),
-        'csrf' => csrf_token(),
-        'session_id' => session()->getId(),
-        'session_cookie' => request()->cookie(config('session.cookie')),
-        'user' => auth()->user(),
-        'headers' => request()->headers->all(),
+Route::get('/api/documentation/yaml', function () {
+    $dir = config('l5-swagger.defaults.paths.docs');
+    $file = config('l5-swagger.documentations.default.paths.docs_yaml');
+    $path = $dir.'/'.$file;
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    return Response::file($path, [
+        'Content-Type' => 'application/yaml',
+        'Content-Disposition' => 'inline;filename="client-openapi.yaml"',
     ]);
 });
