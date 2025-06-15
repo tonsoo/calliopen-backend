@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Services\AuthenticationService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -52,15 +53,21 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'max:255', 'min:6', 'unique:'.Client::class],
         ]);
 
-        $client = new Client($data);
-        $client->save();
+        try {
+            $client = new Client($data);
+            $client->save();
+        } catch (UniqueConstraintViolationException $e) {
+            return Response::json(['error' => 'Client with given data already exists'], 409);
+        }
         
         return Response::json(new ClientJson($client));
     }
 
     public function information(?Client $client) : JsonResponse {
-        return Response::json(
-            $client?->id ? new BasicClientJson($client) : new ClientJson(request()->user())
-        );
+        if ($client) {
+            return Response::json(new BasicClientJson($client));
+        }
+        
+        return Response::json(new ClientJson(request()->user()));
     }
 }

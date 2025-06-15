@@ -11,6 +11,7 @@ use App\Models\Client;
 use App\Models\File;
 use App\Models\Song;
 use App\Services\AudioFileService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
@@ -61,55 +62,65 @@ class ArtistsContoller extends Controller
 
         $service = app(AudioFileService::class);
 
-        DB::transaction(function() use ($request, $data, $service, $album) {
-            $coverUpload = $request->file('cover');
+        try {
+            DB::transaction(function() use ($request, $data, $service, $album) {
+                $coverUpload = $request->file('cover');
 
-            $mime = $coverUpload->getClientMimeType();
-            $name = $coverUpload->getClientOriginalName();
-            $size = $coverUpload->getSize();
+                $mime = $coverUpload->getClientMimeType();
+                $name = $coverUpload->getClientOriginalName();
+                $size = $coverUpload->getSize();
 
-            $coverFile = new File([
-                'mime' => $mime,
-                'name' => $name,
-                'size' => $size,
-                'file' => $coverUpload->store(File::UPLOAD_PATH),
-            ]);
-            $coverFile->save();
-            
-            $trackUpload = $request->file('track');
+                $coverFile = new File([
+                    'mime' => $mime,
+                    'name' => $name,
+                    'size' => $size,
+                    'file' => $coverUpload->store(File::UPLOAD_PATH),
+                ]);
+                $coverFile->save();
+                
+                $trackUpload = $request->file('track');
 
-            $convertedPath = Song::UPLOAD_PATH.'converted/';
-            $originalPath = $trackUpload->getRealPath();
-            $targetName = pathinfo($originalPath, PATHINFO_FILENAME).'.flac';
-            $converted = $service->convertToFlac(
-                $originalPath,
-                Storage::disk('public')->path($convertedPath),
-                $targetName,
-            );
+                $convertedPath = Song::UPLOAD_PATH.'converted/';
+                $originalPath = $trackUpload->getRealPath();
+                $targetName = pathinfo($originalPath, PATHINFO_FILENAME).'.flac';
+                $converted = $service->convertToFlac(
+                    $originalPath,
+                    Storage::disk('public')->path($convertedPath),
+                    $targetName,
+                );
 
-            $song = new Song([
-                'name' => $data['name'],
-                'album_id' => $album->id,
-                'cover_id' => $coverFile->id,
-                'lyrics' => $data['lyrics'],
-                'is_explicit' => $data['is_explicit'],
-                'view_count' => 0,
-                'file' => $convertedPath.basename($converted),
-                'duration_ms' => $service->durationMs($converted),
-            ]);
-            $song->save();
-        });
+                $song = new Song([
+                    'name' => $data['name'],
+                    'album_id' => $album->id,
+                    'cover_id' => $coverFile->id,
+                    'lyrics' => $data['lyrics'],
+                    'is_explicit' => $data['is_explicit'],
+                    'view_count' => 0,
+                    'file' => $convertedPath.basename($converted),
+                    'duration_ms' => $service->durationMs($converted),
+                ]);
+                $song->save();
+            });
 
-        return Response::json();
+            return Response::json();
+        } catch (Exception $e) {
+            return Response::json(['error' => 'Failed to publish song.'], 500);
+        }
     }
 
     public function removeSong(Author $author, Song $song, Request $request) : JsonResponse {
         if ($author->client->id !== $request->user()->id || $song->album->creator->id !== $author->id) {
-            return Response::json(['error' => 'Not author'], 403);
+            return Response::json(['error' => 'Not authorized'], 403);
         }
 
-        $song->delete();
+        try {
+            DB::transaction(function () use ($song) {
+                $song->delete();
+            });
 
-        return Response::json();
+            return Response::json();
+        } catch (Exception $e) {
+            return Response::json(['error' => 'Failed to remove song.'], 500);
+        }
     }
 }

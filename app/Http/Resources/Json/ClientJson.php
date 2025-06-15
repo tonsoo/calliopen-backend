@@ -24,7 +24,8 @@ class ClientJson extends JsonResource
             'email' => $this->email,
             'settings' => $this->settings,
             'avatar' => $this->avatar?->url(),
-            'is_artist' => (bool) $this->author
+            'is_artist' => (bool) $this->author,
+            'created_at' => $this->created_at
         ];
     }
 }
