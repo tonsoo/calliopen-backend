@@ -8,13 +8,8 @@ services:
       - .:/app
       - "{{STORAGE_PATH}}:/app/storage"
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.rule=Host(`{{DOMAIN}}`)
-      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.entrypoints=websecure
-      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.tls=true
-      - traefik.http.routers.calliopen-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
-      - traefik.http.services.calliopen-{{BRANCH_NAME}}.loadbalancer.server.port=80
-    env_file: .env
+      caddy: "{{DOMAIN}}"
+      caddy.reverse_proxy: "{{upstreams 80}}"
     networks:
       - web
 
