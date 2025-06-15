@@ -7,6 +7,7 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 
@@ -82,7 +83,12 @@ class Song extends Model
 
     public function playlists() : BelongsToMany {
         return $this->belongsToMany(Playlist::class, 'playlist_songs')
-            ->withPivot('added_by_id')
+            ->withPivot('song_id')
             ->withTimestamps();
+    }
+
+    public function categories() : BelongsToMany {
+        return $this->belongsToMany(Category::class, 'song_categories');
+        //     ->withPivot('song_id');
     }
 }

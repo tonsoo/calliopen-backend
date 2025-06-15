@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Album extends Model
@@ -24,5 +25,9 @@ class Album extends Model
 
     public function creator() : BelongsTo {
         return $this->belongsTo(Author::class, 'creator_id');
+    }
+
+    public function songs() : HasMany {
+        return $this->hasMany(Song::class);
     }
 }

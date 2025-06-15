@@ -25,4 +25,8 @@ class File extends Model
             ->toClosestReadable()
             ->toFixed(2);
     }
+
+    public function url() : string {
+        return asset('storage/'.$this->file);
+    }
 }

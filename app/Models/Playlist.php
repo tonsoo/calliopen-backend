@@ -30,8 +30,13 @@ class Playlist extends Model
     }
 
     public function collaborators() : BelongsToMany {
-        return $this->belongsToMany(Client::class, 'playlist_collaborators')
-            ->withTimestamps();
+        return $this->belongsToMany(
+            Client::class,
+            'playlist_songs',
+            'playlist_id',
+            'added_by_id',
+        )
+        ->withTimestamps();
     }
 
     public function songs() : HasMany {

@@ -44,6 +44,13 @@ class SongResource extends Resource
             Fieldset::make(__('Song'))
                 ->columns(1)
                 ->schema([
+                    Select::make('categories')
+                        ->relationship('categories', 'name')
+                        ->preload()
+                        ->multiple()
+                        ->searchable()
+                        ->createOptionForm(CategoryResource::schema()),
+
                     TextInput::make('name')
                         ->label(__('Name'))
                         ->required()
