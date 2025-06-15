@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Asmit\ResizedColumn\ResizedColumnPlugin;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -61,7 +62,10 @@ class AdminPanelProvider extends PanelProvider
                     ->switchable(app()->environment('local'))
                     ->users([
                         'Admin' => 'admin@example.com'
-                    ])
+                    ]),
+                
+                ResizedColumnPlugin::make()
+                    ->preserveOnDB()
             ]);
     }
 }

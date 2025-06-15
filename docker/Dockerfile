@@ -13,6 +13,10 @@ RUN install-php-extensions \
     gd \
     opcache
 
+RUN apt update && apt install -y ffmpeg
+
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt update && apt install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
+
+COPY php.ini /usr/local/etc/php/php.ini
