@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Client extends Model
+class Client extends Authenticatable
 {
-    use HasUuid;
+    use HasUuid, HasApiTokens;
     
     protected $fillable = [
         'uuid',
@@ -23,8 +25,13 @@ class Client extends Model
         'avatar_id',
     ];
 
+    protected $hidden = [
+        'password'
+    ];
+
     protected $casts = [
-        'settings' => 'json'
+        'settings' => 'json',
+        'password' => 'hashed'
     ];
 
     public function author() : HasOne {
@@ -37,6 +44,15 @@ class Client extends Model
 
     public function playlists() : HasMany {
         return $this->hasMany(Playlist::class, 'creator_id');
+    }
+
+    public function collabPlaylists() : BelongsToMany {
+        return $this->belongsToMany(
+            Playlist::class,
+            'playlist_collaborators',
+            'client_id',
+            'playlist_id'
+        )->withTimestamps();
     }
 
     public function collaborations() : BelongsToMany {

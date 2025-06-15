@@ -45,7 +45,7 @@ class ClientResource extends Resource
                                 ->label(__('Is a creator?'))
                                 ->dehydrated(false)
                                 ->afterStateHydrated(function ($record, $set) {
-                                    $set('is_author', $record?->author);
+                                    $set('is_author', (bool) $record?->author);
                                 }),
 
                             TextInput::make('name')
@@ -87,7 +87,6 @@ class ClientResource extends Resource
 
                                 TextInput::make('bio')
                                     ->label(__('Bio'))
-                                    ->required()
                                     ->maxLength(255),
 
                                 Repeater::make(__('links'))

@@ -9,12 +9,8 @@ services:
     depends_on:
       - localmysql
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.calliopen-hml-{{BRANCH_NAME}}.rule=Host(`{{DOMAIN}}`)
-      - traefik.http.routers.calliopen-hml-{{BRANCH_NAME}}.entrypoints=websecure
-      - traefik.http.routers.calliopen-hml-{{BRANCH_NAME}}.tls=true
-      - traefik.http.routers.calliopen-hml-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
-      - traefik.http.services.calliopen-hml-{{BRANCH_NAME}}.loadbalancer.server.port=80
+      caddy: "{{DOMAIN}}"
+      caddy.reverse_proxy: "{{upstreams 80}}"
     networks:
       - web
       - sql
@@ -42,12 +38,8 @@ services:
     depends_on:
       - localmysql
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.calliopen-hml-pma-{{BRANCH_NAME}}.rule=Host(`{{PMA_DOMAIN}}`)
-      - traefik.http.routers.calliopen-hml-pma-{{BRANCH_NAME}}.entrypoints=websecure
-      - traefik.http.routers.calliopen-hml-pma-{{BRANCH_NAME}}.tls=true
-      - traefik.http.routers.calliopen-hml-pma-{{BRANCH_NAME}}.tls.certresolver=mytlschallenge
-      - traefik.http.services.calliopen-hml-pma-{{BRANCH_NAME}}.loadbalancer.server.port=80
+      caddy: "{{PMA_DOMAIN}}"
+      caddy.reverse_proxy: "{{upstreams 80}}"
     networks:
       - web
       - sql
@@ -56,7 +48,4 @@ networks:
   web:
     name: web
     external: true
-
   sql:
-    name: calliopen-hml-db-{{BRANCH_NAME}}
-    internal: true

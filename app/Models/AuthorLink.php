@@ -19,6 +19,14 @@ class AuthorLink extends Model
         'is_visible',
     ];
 
+    protected static function boot() {
+        parent::boot();
+
+        static::addGlobalScope('order', function($query) {
+            $query->orderBy('order');
+        });
+    }
+
     public function image() : BelongsTo {
         return $this->belongsTo(File::class, 'image_id');
     }

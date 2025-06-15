@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Services\AudioFileService;
 use App\Traits\HasUuid;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class Song extends Model
 {
@@ -31,14 +34,26 @@ class Song extends Model
     public static function boot() {
         parent::boot();
 
-        static::saved(function ($model) {
+        static::deleting(function($model) {
+            $filePath = storage_path($model->file);
+            dd($filePath);
+            if (file_exists($filePath) && !unlink($filePath)) {
+                throw new Exception('Failed to unlink file');
+            }
+        });
+
+        static::saving(function($model) {
             if (!$model->isDirty('file') || empty($model->file)) return;
 
             $originalFile = $model->getOriginal('file');
             $currentFile = $model->file;
 
-            $rawDirPath = storage_path(static::UPLOAD_PATH . 'raw/');
-            $convertedDirPath = storage_path(static::UPLOAD_PATH . 'converted/');
+            $sourceFilePathForConversion = Storage::disk('public')->path($currentFile);
+            $convertedDirPath = Storage::disk('public')->path(static::UPLOAD_PATH.'converted/');
+
+            if (!Storage::disk('public')->exists($convertedDirPath)) {
+                Storage::disk('public')->makeDirectory($convertedDirPath);
+            }
 
             $originalFileNameOnly = pathinfo($originalFile, PATHINFO_FILENAME);
             if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $originalFileNameOnly)) {
@@ -50,8 +65,7 @@ class Song extends Model
                 }
             }
 
-            $sourceFilePathForConversion = $rawDirPath . $currentFile;
-            $outputFileNameForConversion = pathinfo($currentFile, PATHINFO_FILENAME) . '.flac';
+            $outputFileNameForConversion = pathinfo($currentFile, PATHINFO_FILENAME).'.flac';
 
             $convertedFilePath = app(AudioFileService::class)->convertToFlac(
                 $sourceFilePathForConversion,
@@ -62,13 +76,13 @@ class Song extends Model
             if (!$convertedFilePath) {
                 Log::error("Audio conversion failed for model " . get_class($model) . " (ID: " . $model->getKey() . "). See previous logs for details.");
                 return;
-                
             }
             
             $model->file = static::UPLOAD_PATH . 'converted/' . basename($convertedFilePath);
             if (file_exists($sourceFilePathForConversion) && !unlink($sourceFilePathForConversion)) {
                 Log::warning("Failed to delete original raw source file after successful conversion: {$sourceFilePathForConversion}");
             }
+            $model->saveQuietly();
         });
     }
 
@@ -82,7 +96,11 @@ class Song extends Model
 
     public function playlists() : BelongsToMany {
         return $this->belongsToMany(Playlist::class, 'playlist_songs')
-            ->withPivot('added_by_id')
+            ->withPivot('song_id')
             ->withTimestamps();
+    }
+
+    public function categories() : BelongsToMany {
+        return $this->belongsToMany(Category::class, 'song_categories');
     }
 }

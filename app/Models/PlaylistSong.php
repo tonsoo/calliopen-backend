@@ -14,6 +14,21 @@ class PlaylistSong extends Model
         'order',
     ];
 
+    protected static function boot() {
+        parent::boot();
+
+        static::created(function (PlaylistSong $record) {
+            $maxOrder = static::where('playlist_id', $record->playlist_id)
+                ->max('order');
+
+            $record->order = ($maxOrder ?? 0) + 1;
+        });
+
+        static::addGlobalScope('order', function($query) {
+            $query->orderBy('order');
+        });
+    }
+
     public function playlist() : BelongsTo {
         return $this->belongsTo(Playlist::class);
     }
