@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "asmit/resized-column": "^1.0",
+        "darkaonline/l5-swagger": "^9.0",
         "dutchcodingcompany/filament-developer-logins": "^1.9",
         "filament/filament": "^3.3",
         "l1nnah/file-size": "^1.0",
