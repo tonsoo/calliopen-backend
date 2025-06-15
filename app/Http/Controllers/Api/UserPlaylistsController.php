@@ -102,6 +102,8 @@ class UserPlaylistsController extends Controller
                 'added_by_id' => $request->user()->id,
                 'order' => 1,
             ]);
+            $playlist->total_duration += $song->duration_ms;
+            $playlist->save();
         } catch (UniqueConstraintViolationException $e) {
             return Response::json(['error' => 'Song already in playlist'], 409);
         }
@@ -114,12 +116,16 @@ class UserPlaylistsController extends Controller
         if ($validation != null) return $validation;
 
         try {
+            $sondDuration = $song->duration_ms;
             $deletedCount = $playlist->songs()->detach($song->id);
             if ($deletedCount === 0) {
                 return Response::json(['message' => 'Song was not found in the playlist.'], 404);
             }
 
             $this->reorderSongsAfterRemoval($playlist);
+
+            $playlist->total_duration -= $sondDuration;
+            $playlist->save();
 
             return Response::json(new PlaylistJson($playlist->load(['creator', 'collaborators'])));
         } catch (UniqueConstraintViolationException $e) {
