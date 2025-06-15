@@ -1,5 +1,6 @@
 services:
   php:
+    env_file: .env
     build: ./docker
     container_name: "calliopen-php-{{BRANCH_NAME}}"
     environment:
