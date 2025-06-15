@@ -21,6 +21,7 @@ class BasicClientJson extends JsonResource
             'uuid' => $this->uuid,
             'username' => $this->username,
             'avatar' => $this->avatar?->url(),
+            'is_artist' => (bool) $this->author
         ];
     }
 }

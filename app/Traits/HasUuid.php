@@ -13,4 +13,8 @@ trait HasUuid
             }
         });
     }
+
+    public function getRouteKeyName() {
+        return 'uuid';
+    }
 }

@@ -39,7 +39,18 @@ class Playlist extends Model
         ->withTimestamps();
     }
 
-    public function songs() : HasMany {
+    public function songEntries() : HasMany {
         return $this->hasMany(PlaylistSong::class);
+    }
+
+    public function songs() : BelongsToMany {
+        return $this->belongsToMany(
+            Song::class,
+            'playlist_songs',
+            'playlist_id',
+            'song_id'
+        )
+        ->withPivot('added_by_id', 'order')
+        ->withTimestamps();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use L1nnah\FileSize\FileSizeConverter;
 
@@ -19,6 +20,17 @@ class File extends Model
         'mime',
         'size',
     ];
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($model) {
+            $filePath = storage_path($model->file);
+            if (file_exists($filePath) && !unlink($filePath)) {
+                throw new Exception('Failed to unlink file');
+            }
+        });
+    }
 
     public function readableSize() : string {
         return (new FileSizeConverter($this->size))

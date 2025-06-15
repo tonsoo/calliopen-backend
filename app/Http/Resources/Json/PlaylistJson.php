@@ -24,7 +24,7 @@ class PlaylistJson extends JsonResource
             'name' => $this->name,
             'total_duration' => $this->total_duration,
             'is_public' => $this->is_public,
-            'songs' => SongJson::collection($this->whenLoaded('songs')),
+            'songs' => PlaylistSongJson::collection($this->whenLoaded('songEntries')),
             'collaborators' => BasicClientJson::collection($this->whenLoaded('collaborators')),
         ];
     }
