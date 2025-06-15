@@ -6,6 +6,8 @@ services:
       SERVER_NAME: ":80"
     volumes:
       - .:/app
+    ports:
+      - "9912:80"
     depends_on:
       - mysql
 
@@ -25,6 +27,8 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: calliopen-pma
     restart: always
+    ports:
+      - "9913:80"
     environment:
       PMA_HOST: mysql
       PMA_USER: calliopen

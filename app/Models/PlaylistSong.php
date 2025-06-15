@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class PlaylistSong extends Model
+{
+    protected $fillable = [
+        'playlist_id',
+        'song_id',
+        'added_by_id',
+        'order',
+    ];
+
+    public function playlist() : BelongsTo {
+        return $this->belongsTo(Playlist::class);
+    }
+
+    public function song() : BelongsTo {
+        return $this->belongsTo(Song::class);
+    }
+
+    public function addedBy() : BelongsTo {
+        return $this->belongsTo(Client::class, 'added_by_id');
+    }
+}
