@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('playlists_songs', function (Blueprint $table) {
+        Schema::table('playlist_songs', function (Blueprint $table) {
             $table->foreignId('added_by_id')->nullable()->change();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('playlists_songs', function (Blueprint $table) {
+        Schema::table('playlist_songs', function (Blueprint $table) {
             $table->foreignId('added_by_id')->nullable(false)->change();
         });
     }
