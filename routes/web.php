@@ -13,5 +13,6 @@ Route::get('/debug-session', function () {
         'session_id' => session()->getId(),
         'session_cookie' => request()->cookie(config('session.cookie')),
         'user' => auth()->user(),
+        'headers' => request()->headers->all(),
     ]);
 });
