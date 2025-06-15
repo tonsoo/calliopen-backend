@@ -17,7 +17,6 @@ services:
       - traefik.http.services.calliopen-hml-{{BRANCH_NAME}}.loadbalancer.server.port=80
     networks:
       - web
-      - sql
 
   localmysql:
     image: mysql:8.4
@@ -30,8 +29,6 @@ services:
       MYSQL_PASSWORD: "{{DB_PASSWORD}}"
     volumes:
       - "{{DATABASE_PERSIST_PATH}}:/var/lib/mysql"
-    networks:
-      - sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -50,13 +47,8 @@ services:
       - traefik.http.services.calliopen-hml-pma-{{BRANCH_NAME}}.loadbalancer.server.port=80
     networks:
       - web
-      - sql
 
 networks:
   web:
     name: web
     external: true
-
-  sql:
-    name: calliopen-hml-db-{{BRANCH_NAME}}
-    internal: true
