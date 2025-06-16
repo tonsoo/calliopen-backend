@@ -63,11 +63,11 @@ class AuthController extends Controller
         return Response::json(new ClientJson($client));
     }
 
-    public function information(?Client $client) : JsonResponse {
-        if ($client) {
+    public function information(?Client $client, Request $request) : JsonResponse {
+        if ($client?->id) {
             return Response::json(new BasicClientJson($client));
         }
-        
-        return Response::json(new ClientJson(request()->user()));
+
+        return Response::json(new ClientJson($request->user()));
     }
 }
