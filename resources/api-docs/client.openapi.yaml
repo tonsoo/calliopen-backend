@@ -5,7 +5,7 @@ info:
   description: API documentation for CalliOpen.
 servers:
   - url: http://localhost:9912/api
-  - url: https://calliopen.com.br
+  - url: https://calliopen.com.br/api
 
 paths:
   /auth/login:
