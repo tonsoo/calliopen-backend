@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AlbumsController;
 use App\Http\Controllers\Api\ArtistsContoller;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserPlaylistsController;
+use App\Http\Controllers\Api\SongsController;
 use App\Http\Middleware\Api\AuthenticationMiddleware;
-use App\Models\Song;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function() {
@@ -40,10 +41,21 @@ Route::group(['middleware' => AuthenticationMiddleware::class], function() {
             Route::get('/', [ArtistsContoller::class, 'information'])->name('api.artists.info');
 
             Route::group(['prefix' => 'songs'], function() {
+                Route::get('/', [ArtistsContoller::class, 'allSongs'])->name('api.artists.all-songs');
                 Route::get('/{album:uuid}', [ArtistsContoller::class, 'songs'])->name('api.artists.songs');
                 Route::post('/publish', [ArtistsContoller::class, 'publishSong'])->name('api.artists.pubish');
                 Route::post('/{song}/remove', [ArtistsContoller::class, 'removeSong'])->name('api.artists.remove');
             });
         });
+    });
+
+    Route::group(['prefix' => 'albums'], function() {
+        Route::get('/', [AlbumsController::class, 'all'])->name('api.albums.all');
+    });
+
+    Route::group(['prefix' => 'songs'], function() {
+        Route::get('/', [SongsController::class, 'all'])->name('api.songs.all');
+        Route::get('/{song}', [SongsController::class, 'song'])->name('api.songs.specific');
+        Route::get('/{song}/favorite', [SongsController::class, 'favoriteSong'])->name('api.songs.favorites');
     });
 });

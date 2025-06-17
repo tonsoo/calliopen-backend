@@ -37,6 +37,11 @@ class ArtistsContoller extends Controller
         return Response::json(new AuthorJson($author->load(['albums', 'links'])));
     }
 
+    public function allSongs(Author $author) : JsonResponse {
+        $songs = Author::with('albums.songs.album')->find($author->id)->albums->flatMap->songs;
+        return Response::json(SongJson::collection($songs));
+    }
+
     public function songs(Author $author, Album $album) : JsonResponse {
         if ($author->id != $album->creator->id) {
             return Response::json(['error' => 'Arguments mismatch'], 400);
