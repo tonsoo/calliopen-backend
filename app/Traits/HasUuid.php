@@ -4,10 +4,9 @@ namespace App\Traits;
 
 use Str;
 
-trait HasUuid
-{
+trait HasUuid {
     public static function bootHasUuid() : void {
-        static::creating(function ($model) {
+        static::saving(function ($model) {
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
