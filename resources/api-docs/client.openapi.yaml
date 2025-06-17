@@ -53,8 +53,6 @@ paths:
                   error:
                     type: string
                     example: Client doesn"t exist
-        422:
-          $ref: "#/components/responses/ValidationError"
         500:
           description: Unknown error
           content:
@@ -65,6 +63,8 @@ paths:
                   error:
                     type: string
                     example: Unknown error
+        422:
+          $ref: "#/components/responses/ValidationError"
 
   /auth/register:
     post:
@@ -100,7 +100,7 @@ paths:
 
   /user:
     get:
-      summary: Get authenticated user's information
+      summary: Get authenticated user"s information
       operationId: getUserInformation
       tags:
         - User
@@ -723,6 +723,20 @@ components:
       bearerFormat: JWT
 
   schemas:
+    LoginRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: user@example.com or username
+        password:
+          type: string
+          format: password
+          example: password
+
     RegisterRequest:
       type: object
       required:
