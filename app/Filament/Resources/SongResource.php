@@ -58,7 +58,6 @@ class SongResource extends Resource
 
                     Textarea::make('lyrics')
                         ->label(__('Lyrics'))
-                        ->required()
                         ->maxLength(1000),
 
                     Toggle::make('is_explicit')

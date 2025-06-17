@@ -23,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
+use Hash;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -68,9 +69,10 @@ class ClientResource extends Resource
 
                             TextInput::make('password')
                                 ->label(__('Password'))
-                                ->required()
                                 ->password()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->required(fn($record) => !$record)
+                                ->dehydrated(fn($state) => !empty($state)),
 
                             self::fileUpload(__('Avatar'), 'avatar'),
                         ]),
@@ -181,17 +183,5 @@ class ClientResource extends Resource
             'create' => Pages\CreateClient::route('/create'),
             'edit' => Pages\EditClient::route('/{record}/edit'),
         ];
-    }
-
-    protected function mutateFormDataBeforeSave($data) {
-        dd($data);
-        return $data;
-    }
-
-    protected function handleRecordUpdate($record, array $data)
-    {
-        dd('1', $data);
-
-        return $record;
     }
 }

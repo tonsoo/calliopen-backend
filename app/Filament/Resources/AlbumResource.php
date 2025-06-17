@@ -41,7 +41,7 @@ class AlbumResource extends Resource
                 ->searchable()
                 ->preload()
                 ->relationship('creator', 'name')
-                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} - {$record->username}")
+                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} - {$record->client->username}")
                 ->createOptionForm(ClientResource::schema())
                 ->required(),
 
