@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Json;
 
+use App\Settings\ClientSettings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,7 +24,7 @@ class ClientJson extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'settings' => $this->settings,
-            'avatar' => $this->avatar?->url(),
+            'avatar' => $this->avatar?->url() ?? app(ClientSettings::class)->defaultAvatarUrl(),
             'is_artist' => (bool) $this->author,
             'created_at' => $this->created_at
         ];
