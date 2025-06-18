@@ -1122,6 +1122,11 @@ components:
         creator:
           $ref: "#/components/schemas/Author"
           description: The artist who created this album.
+        songs:
+          type: array
+          description: Songs in the album
+          items:
+            $ref: "#/components/schemas/Song"
       example:
         uuid: "0229a48a-5061-4558-815c-1d868f237117"
         name: "Debut Album"
@@ -1129,6 +1134,27 @@ components:
         creator:
           uuid: "33fba4a6-7667-406b-8765-78e4891df8ab"
           name: "My Favorite Artist"
+          client:
+            uuid: "6d75b583-9fd0-4382-ba0c-54f85a0d8c8e"
+            username: "alyssuuu"
+            avatar: "http://localhost:9912/storage/avatars/default.jpg"
+            is_artist: true
+          albums: []
+          links: []
+        songs:
+          - uuid: "dea8869f-add5-488c-a4f6-ce4e29e698c4"
+            name: "Example Song Title"
+            album:
+              uuid: "0229a48a-5061-4558-815c-1d868f237117"
+              name: "Debut Album"
+            cover: "http://localhost:9912/storage/songs/covers/example.jpg"
+            lyrics: "Sample lyrics here."
+            is_explicit: false
+            views: 12345
+            file: "http://localhost:9912/storage/uploads/songs/converted/example.flac"
+            duration: 180000
+            created_at: "2025-06-15T08:00:00.000000Z"
+            updated_at: "2025-06-15T08:00:00.000000Z"
 
     Song:
       type: object
