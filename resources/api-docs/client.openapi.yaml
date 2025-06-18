@@ -1124,6 +1124,7 @@ components:
           description: The artist who created this album.
         songs:
           type: array
+          nullable: true
           description: Songs in the album
           items:
             $ref: "#/components/schemas/Song"
