@@ -73,7 +73,7 @@ class SongResource extends Resource
                         ->label(__('Sound Track'))
                         ->directory(Song::UPLOAD_PATH.'raw')
                         ->acceptedFileTypes(['audio/*'])
-                        ->maxSize(1024 * 1024 * 100)
+                        ->maxSize(102400)
                         ->afterStateUpdated(function($state, $set) {
                             if (empty($state)) {
                                 $set('duration_ms', 0);
