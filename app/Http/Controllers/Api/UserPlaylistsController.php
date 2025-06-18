@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\File;
 use App\Models\Playlist;
 use App\Models\Song;
+use App\Traits\HasPaginations;
 use Exception;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Response;
 
 class UserPlaylistsController extends Controller
 {
+    use HasPaginations;
+
     private function validatePlaylist(?Client $client, Playlist $playlist) : ?JsonResponse {
         if (!$client) {
             return Response::json(['error' => 'Client not found'], 404);
@@ -34,7 +37,7 @@ class UserPlaylistsController extends Controller
         $playlists = $client->id === $request->id
             ? $client->playlists->with(['creator', 'cover', 'collaborators'])
             : $client->playlists->where('is_public')->with(['creator', 'cover', 'collaborators']);
-        return Response::json(PlaylistJson::collection($playlists));
+        return Response::json(PlaylistJson::collection($this->paginate($playlists, $request)));
     }
 
     public function playlist(Client $client, Playlist $playlist) : JsonResponse {
@@ -48,7 +51,7 @@ class UserPlaylistsController extends Controller
         $validation = $this->validatePlaylist($client, $playlist);
         if ($validation != null) return $validation;
 
-        return Response::json(PlaylistSongJson::collection($playlist->songEntries->load(['song.album.creator', 'addedBy'])));
+        return Response::json(PlaylistSongJson::collection($this->paginate($playlist->songEntries->load(['song.album.creator', 'addedBy']), $request)));
     }
 
     public function createPlaylist(Request $request) : JsonResponse {

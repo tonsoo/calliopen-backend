@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Json\SongJson;
 use App\Models\Client;
 use App\Models\Song;
+use App\Traits\HasPaginations;
 use DateInterval;
 use DateTime;
 use Illuminate\Http\JsonResponse;
@@ -14,9 +15,11 @@ use Illuminate\Support\Facades\Response;
 
 class SongsController extends Controller
 {
-    public function all() : JsonResponse {
+    use HasPaginations;
+
+    public function all(Request $request) : JsonResponse {
         $date = (new DateTime())->sub(new DateInterval('P1M'));
-        return Response::json(SongJson::collection(Song::with('album')->whereDate('created_at', '>', $date)->get()));
+        return Response::json(SongJson::collection($this->paginate(Song::with('album')->whereDate('created_at', '>', $date), $request)));
     }
 
     public function song(Song $song) : JsonResponse {

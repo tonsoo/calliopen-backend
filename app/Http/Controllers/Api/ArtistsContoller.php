@@ -11,6 +11,7 @@ use App\Models\Client;
 use App\Models\File;
 use App\Models\Song;
 use App\Services\AudioFileService;
+use App\Traits\HasPaginations;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ArtistsContoller extends Controller
 {
-    public function all() : JsonResponse  {
-        return Response::json(AuthorJson::collection(Author::all()));
+    use HasPaginations;
+
+    public function all(Request $request) : JsonResponse  {
+        return Response::json(AuthorJson::collection($this->paginate(Author::all(), $request)));
     }
 
     public function me(Request $request) : JsonResponse {
@@ -37,17 +40,17 @@ class ArtistsContoller extends Controller
         return Response::json(new AuthorJson($author->load(['albums', 'links'])));
     }
 
-    public function allSongs(Author $author) : JsonResponse {
+    public function allSongs(Author $author, Request $request) : JsonResponse {
         $songs = Author::with('albums.songs.album')->find($author->id)->albums->flatMap->songs;
-        return Response::json(SongJson::collection($songs));
+        return Response::json(SongJson::collection($this->paginate($songs, $request)));
     }
 
-    public function songs(Author $author, Album $album) : JsonResponse {
+    public function songs(Author $author, Album $album, Request $request) : JsonResponse {
         if ($author->id != $album->creator->id) {
             return Response::json(['error' => 'Arguments mismatch'], 400);
         }
 
-        return Response::json(SongJson::collection($album->songs));
+        return Response::json(SongJson::collection($this->paginate($album->songs, $request)));
     }
 
     public function publishSong(Author $author, Request $request) : JsonResponse {
