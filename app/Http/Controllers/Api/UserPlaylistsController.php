@@ -47,13 +47,6 @@ class UserPlaylistsController extends Controller
         return Response::json(new PlaylistJson($playlist->load(['creator', 'collaborators'])));
     }
 
-    public function songs(Client $client, Playlist $playlist, Request $request) : JsonResponse {
-        $validation = $this->validatePlaylist($client, $playlist);
-        if ($validation != null) return $validation;
-
-        return Response::json(PlaylistSongJson::collection($this->paginate($playlist->songEntries->load(['song.album.creator', 'addedBy']), $request)));
-    }
-
     public function createPlaylist(Request $request) : JsonResponse {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:1', 'max:255'],

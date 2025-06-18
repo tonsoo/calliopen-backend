@@ -20,4 +20,8 @@ class AlbumsController extends Controller
         $date = (new DateTime())->sub(new DateInterval('P1M'));
         return Response::json(AlbumJson::collection($this->paginate(Album::whereDate('created_at', '>', $date), $request)));
     }
+
+    public function album(Album $album) : JsonResponse {
+        return Response::json(new AlbumJson($album->load('songs')));
+    }
 }

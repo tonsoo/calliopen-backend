@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin AlbumJson
+ * @mixin \App\Models\Album
  */
 class AlbumJson extends JsonResource
 {
@@ -22,6 +22,7 @@ class AlbumJson extends JsonResource
             'name' => $this->name,
             'cover' => $this->cover->url(),
             'creator' => new AuthorJson($this->whenLoaded('creator')),
+            'songs' => SongJson::collection($this->whenLoaded('songs')),
         ];
     }
 }

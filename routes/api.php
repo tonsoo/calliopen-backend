@@ -23,7 +23,6 @@ Route::group(['middleware' => AuthenticationMiddleware::class], function() {
 
             Route::group(['prefix' => '{playlist:uuid}'], function() {
                 Route::get('/', [UserPlaylistsController::class, 'playlist'])->name('api.user.playlist.specific');
-                Route::get('/songs', [UserPlaylistsController::class, 'songs'])->name('api.user.playlist.songs');
                 Route::post('/add/{song}', [UserPlaylistsController::class, 'addSong'])->name('api.user.playlist.add');
                 Route::post('/remove/{song}', [UserPlaylistsController::class, 'removeSong'])->name('api.user.playlist.remove');
                 Route::post('/order', [UserPlaylistsController::class, 'orderSongs'])->name('api.user.playlist.order');
@@ -51,6 +50,7 @@ Route::group(['middleware' => AuthenticationMiddleware::class], function() {
 
     Route::group(['prefix' => 'albums'], function() {
         Route::get('/', [AlbumsController::class, 'all'])->name('api.albums.all');
+        Route::get('/{album:uuid}', [AlbumsController::class, 'album'])->name('api.albums.specific');
     });
 
     Route::group(['prefix' => 'songs'], function() {

@@ -615,53 +615,6 @@ paths:
         404:
           description: Artist not found
 
-  /artists/{authorUuid}/songs/{albumUuid}:
-    get:
-      summary: Get songs by a specific artist within an album
-      operationId: getArtistAlbumSongs
-      tags:
-        - Artists
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: authorUuid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID of the artist
-        - name: albumUuid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID of the album
-      responses:
-        200:
-          description: List of songs in the album
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Song"
-        400:
-          description: Arguments mismatch
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Arguments mismatch
-        401:
-          $ref: "#/components/responses/UnauthorizedError"
-        404:
-          description: Artist or Album not found
-
   /artists/{authorUuid}/songs/publish:
     post:
       summary: Publish a new song by an artist
@@ -777,6 +730,66 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         404:
           description: Artist or Album not found
+
+  /albums/{albumUuid}:
+    get:
+      summary: Get album
+      operationId: getAlbum
+      tags:
+        - Albums
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: albumUuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the album
+      responses:
+        200:
+          description: Album information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Album"
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+        404:
+          description: Album not found
+
+  /albums/{albumUuid}/songs:
+    get:
+      summary: Get songs in an album
+      operationId: getAlbumSongs
+      tags:
+        - Albums
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: albumUuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the album
+      responses:
+        200:
+          description: List of songs in the album
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Song"
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+        404:
+          description: Album not found
 
   /songs:
     get:
