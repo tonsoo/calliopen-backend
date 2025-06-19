@@ -49,7 +49,7 @@ class UserPlaylistsController extends Controller
         $validation = $this->validatePlaylist($client, $playlist);
         if ($validation != null) return $validation;
 
-        return Response::json(new PlaylistJson($playlist->load(['creator', 'collaborators'])));
+        return Response::json(new PlaylistJson($playlist->load(['creator', 'collaborators', 'songEntries'])));
     }
 
     public function createPlaylist(Request $request) : JsonResponse {
