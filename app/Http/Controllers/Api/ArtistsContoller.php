@@ -24,7 +24,7 @@ class ArtistsContoller extends Controller
     use HasPaginations;
 
     public function all(Request $request) : JsonResponse  {
-        return Response::json(AuthorJson::collection($this->paginate(Author::all(), $request)));
+        return Response::json(AuthorJson::collection($this->paginate(Author::with(['links']), $request)));
     }
 
     public function me(Request $request) : JsonResponse {
@@ -41,7 +41,9 @@ class ArtistsContoller extends Controller
     }
 
     public function allSongs(Author $author, Request $request) : JsonResponse {
-        $songs = Author::with('albums.songs.album')->find($author->id)->albums->flatMap->songs;
+        $songs = Song::whereHas('album.creator', function ($query) use ($author) {
+            $query->where('id', $author->id);
+        })->with(['album']);
         return Response::json(SongJson::collection($this->paginate($songs, $request)));
     }
 
@@ -50,7 +52,7 @@ class ArtistsContoller extends Controller
             return Response::json(['error' => 'Arguments mismatch'], 400);
         }
 
-        return Response::json(SongJson::collection($this->paginate($album->songs, $request)));
+        return Response::json(SongJson::collection($this->paginate($album->songs()->getQuery(), $request)));
     }
 
     public function publishSong(Author $author, Request $request) : JsonResponse {
