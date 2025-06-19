@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlaylistResource\Pages;
 use App\Filament\Resources\PlaylistResource\RelationManagers;
+use App\Models\Client;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Traits\HasCommonFields;
@@ -52,14 +53,18 @@ class PlaylistResource extends Resource
 
             Repeater::make('songs')
                 ->label(__('Songs'))
-                ->relationship('songs')
+                ->relationship('songEntries')
                 ->orderColumn('order')
                 ->collapsible()
                 ->collapsed()
                 ->itemLabel(function($state) {
                     $song = Song::find($state['song_id']);
-                    if(!$song) return '-';
-                    return "{$song->name} - {$song->album->creator->name}";
+                    $addedBy = Client::find($state['added_id']);
+
+                    $songText = !$song ? '-' : "{$song->name} - {$song->album->creator->name}";
+                    $addedByText = !$addedBy ? '' : " | Added by: {$addedBy->name} - {$addedBy->username}";
+                    
+                    return $songText . $addedByText;
                 })
                 ->schema([
                     Select::make('song_id')
@@ -67,6 +72,7 @@ class PlaylistResource extends Resource
                         ->relationship('song', 'name')
                         ->preload()
                         ->searchable()
+                        ->required()
                         ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} - {$record->album->creator->name}"),
 
                     Select::make('added_id')
@@ -74,6 +80,7 @@ class PlaylistResource extends Resource
                         ->relationship('addedBy', 'name')
                         ->preload()
                         ->searchable()
+                        ->required()
                         ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} - {$record->username}"),
                 ]),
         ];

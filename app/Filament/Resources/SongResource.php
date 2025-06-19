@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SongResource\Pages;
 use App\Filament\Resources\SongResource\RelationManagers;
+use App\Helpers\TimeConverter;
 use App\Models\Album;
 use App\Models\Song;
 use App\Services\AudioFileService;
@@ -12,6 +13,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
@@ -64,9 +66,21 @@ class SongResource extends Resource
                         ->label(__('Is the song explicit?'))
                         ->default(false),
 
-                    TextInput::make('duration_ms')
+                    TextInput::make('duration')
                         ->label(__('Duration'))
-                        ->readOnly(),
+                        ->readOnly()
+                        ->dehydrated(false)
+                        ->afterStateHydrated(function ($component, $get) {
+                            $durationMs = $get('duration_ms');
+                            if ($durationMs !== null) {
+                                $formattedDuration = TimeConverter::formatForHumans($durationMs / 1000);
+                                $component->state($formattedDuration);
+                            } else {
+                                $component->state('0');
+                            }
+                        }),
+
+                    Hidden::make('duration_ms'),
 
                     FileUpload::make('file')
                         ->required()
@@ -77,6 +91,7 @@ class SongResource extends Resource
                         ->afterStateUpdated(function($state, $set) {
                             if (empty($state)) {
                                 $set('duration_ms', 0);
+                                $set('duration', TimeConverter::formatForHumans(0));
                                 return;
                             } 
 
@@ -89,11 +104,13 @@ class SongResource extends Resource
                             } else {
                                 Log::error("Unexpected state type in FileUpload afterStateUpdated: " . gettype($state));
                                 $set('duration_seconds', 0.0);
+                                $set('duration', TimeConverter::formatForHumans(0));
                                 return;
                             }
 
-                            $duration = app(AudioFileService::class)->durationMs($filePath);
-                            $set('duration_ms', max(0, $duration));
+                            $duration = max(0, app(AudioFileService::class)->durationMs($filePath));
+                            $set('duration_ms', $duration);
+                            $set('duration', TimeConverter::formatForHumans($duration / 1000));
                         }),
                 ]),
 
@@ -105,6 +122,7 @@ class SongResource extends Resource
                     Select::make('album_id')
                         ->label(__('Album'))
                         ->searchable()
+                        ->required()
                         ->relationship('album', 'name')
                         ->preload()
                         ->createOptionForm(AlbumResource::schema())
