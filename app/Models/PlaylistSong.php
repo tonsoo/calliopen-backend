@@ -25,7 +25,9 @@ class PlaylistSong extends Model
     protected static function boot() {
         parent::boot();
 
-        static::created(function (PlaylistSong $record) {
+        static::creating(function (PlaylistSong $record) {
+            if ($record->order) return;
+            
             $maxOrder = static::where('playlist_id', $record->playlist_id)
                 ->max('order');
 

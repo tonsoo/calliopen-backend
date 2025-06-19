@@ -3,12 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlaylistResource\Pages;
-use App\Filament\Resources\PlaylistResource\RelationManagers;
+use App\Helpers\TimeConverter;
 use App\Models\Client;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Traits\HasCommonFields;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -50,6 +51,22 @@ class PlaylistResource extends Resource
                 ->default(true),
 
             static::fileUpload(__('Cover'), 'cover'),
+
+            TextInput::make('total_duration_formatted')
+                ->label(__('Total duration'))
+                ->readOnly()
+                ->dehydrated(false)
+                ->afterStateHydrated(function ($component, $get) {
+                    $durationMs = $get('total_duration');
+                    if ($durationMs !== null) {
+                        $formattedDuration = TimeConverter::formatForHumans($durationMs / 1000);
+                        $component->state($formattedDuration);
+                    } else {
+                        $component->state('0');
+                    }
+                }),
+
+            Hidden::make('total_duration'),
 
             Repeater::make('songs')
                 ->label(__('Songs'))

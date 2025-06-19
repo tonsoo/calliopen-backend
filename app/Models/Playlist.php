@@ -34,6 +34,14 @@ class Playlist extends Model
         'is_public',
     ];
 
+    protected static function boot() : void {
+        parent::boot();
+
+        static::saving(function(PLaylist $record) {
+            $record->total_duration = $record->songs()->sum('duration_ms');
+        });
+    }
+
     public function creator() : BelongsTo {
         return $this->belongsTo(Client::class, 'creator_id');
     }
