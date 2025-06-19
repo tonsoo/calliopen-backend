@@ -26,7 +26,7 @@ class UserPlaylistsController extends Controller
             return Response::json(['error' => 'Client not found'], 404);
         }
 
-        if (!$playlist->is_public && $playlist->creator->id != $client->id) {
+        if (!$playlist->is_public && $playlist->creator->id !== $client->id) {
             return Response::json(['error' => 'Private playlist'], 403);
         }
 
@@ -45,8 +45,8 @@ class UserPlaylistsController extends Controller
         return Response::json(PlaylistJson::collection($this->paginate($playlists->getQuery(), $request)));
     }
 
-    public function playlist(Client $client, Playlist $playlist) : JsonResponse {
-        $validation = $this->validatePlaylist($client, $playlist);
+    public function playlist(Client $client, Playlist $playlist, Request $request) : JsonResponse {
+        $validation = $this->validatePlaylist($request->user(), $playlist);
         if ($validation != null) return $validation;
 
         return Response::json(new PlaylistJson($playlist->load(['creator', 'collaborators', 'songEntries.song.album'])));
@@ -95,7 +95,7 @@ class UserPlaylistsController extends Controller
     }
 
     public function addSong(Client $client, Playlist $playlist, Song $song, Request $request) : JsonResponse {
-        $validation = $this->validatePlaylist($client, $playlist);
+        $validation = $this->validatePlaylist($request->user(), $playlist);
         if ($validation != null) return $validation;
 
         try {
@@ -113,7 +113,7 @@ class UserPlaylistsController extends Controller
     }
 
     public function removeSong(Client $client, Playlist $playlist, Song $song, Request $request) : JsonResponse {
-        $validation = $this->validatePlaylist($client, $playlist);
+        $validation = $this->validatePlaylist($request->user(), $playlist);
         if ($validation != null) return $validation;
 
         try {
@@ -154,7 +154,7 @@ class UserPlaylistsController extends Controller
             'uuids.*' => 'required|string|uuid',
         ]);
 
-        $validation = $this->validatePlaylist($client, $playlist);
+        $validation = $this->validatePlaylist($request->user(), $playlist);
         if ($validation != null) return $validation;
 
         $newOrderUuids = $data['uuids'];
