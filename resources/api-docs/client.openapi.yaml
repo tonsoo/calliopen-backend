@@ -115,6 +115,31 @@ paths:
                 $ref: "#/components/schemas/Client"
         401:
           $ref: "#/components/responses/UnauthorizedError"
+      
+  /user/playlists:
+    get:
+      summary: Get all playlists from current user
+      operationId: getMyUserPlaylists
+      tags:
+        - Playlists
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        200:
+          description: List of playlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Playlist"
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+        404:
+          description: Client not found
 
   /user/{clientUuid}:
     get:

@@ -17,6 +17,7 @@ Route::group(['middleware' => AuthenticationMiddleware::class], function() {
     Route::group(['prefix' => 'user'], function() {
         Route::get('/', [AuthController::class, 'information'])->name('api.user.me');
         Route::get('/{client:uuid}', [AuthController::class, 'information'])->name('api.user.other');
+        Route::get('/playlists', [AuthController::class, 'myPlaylists'])->name('api.user.my-playlists');
 
         Route::group(['prefix' => '{client:uuid}/playlists'], function() {
             Route::get('/', [UserPlaylistsController::class, 'playlists'])->name('api.user.playlist.all');

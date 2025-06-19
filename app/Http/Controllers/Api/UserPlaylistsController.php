@@ -33,6 +33,10 @@ class UserPlaylistsController extends Controller
         return null;
     }
 
+    public function myPlaylists(Client $client, Request $request) : JsonResponse {
+        return Response::json(PlaylistJson::collection($this->paginate($client->playlists()->with(['creator', 'cover', 'collaborators'])->getQuery(), $request)));
+    }
+
     public function playlists(Client $client, Request $request) : JsonResponse {
         $playlists = $client->id === $request->id
             ? $client->playlists()->with(['creator', 'cover', 'collaborators'])
