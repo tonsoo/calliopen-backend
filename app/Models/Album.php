@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * Album
+ * @property string $uuid
+ * @property string $name
+ * @property File $cover
+ * @property Author $creator
+ * @property Song[] $songs
+ */
 class Album extends Model
 {
     use HasUuid;

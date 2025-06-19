@@ -13,6 +13,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Song
+ * 
+ * @property string $uuid
+ * @property string $name
+ * @property int $duration_ms
+ * @property Album $album
+ * @property File $cover
+ * @property string $lyrics
+ * @property bool $is_explicit
+ * @property int $view_count
+ * @property File $file
+ * @property Playlist[] $playlists
+ * @property Category[] $categories
+ */
 class Song extends Model
 {
     use HasUuid;

@@ -7,6 +7,14 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use L1nnah\FileSize\FileSizeConverter;
 
+/**
+ * File
+ * @property string $uuid
+ * @property string $name
+ * @property string $file
+ * @property string $mime
+ * @property int $size
+ */
 class File extends Model
 {
     use HasUuid;

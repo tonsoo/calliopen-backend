@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * Author
+ * @property string $uuid
+ * @property Client $client
+ * @property AuthorLink[] $links
+ * @property Album[] $albums
+ */
 class Author extends Model
 {
     use HasUuid;

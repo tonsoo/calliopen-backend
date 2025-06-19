@@ -11,6 +11,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Client
+ * 
+ * @property string $uuid
+ * @property string $name
+ * @property string $username
+ * @property string $email
+ * @property string $password
+ * @property array $settings
+ * @property File $avatar
+ * @property Author $author
+ * @property Playlist[] $playlists
+ * @property Playlist[] $collaborations
+ * @property PlaylistSong[] $addedSongs
+ */
 class Client extends Authenticatable
 {
     use HasUuid, HasApiTokens;
@@ -43,16 +58,7 @@ class Client extends Authenticatable
     }
 
     public function playlists() : HasMany {
-        return $this->hasMany(Playlist::class, 'creator_id');
-    }
-
-    public function collabPlaylists() : BelongsToMany {
-        return $this->belongsToMany(
-            Playlist::class,
-            'playlist_collaborators',
-            'client_id',
-            'playlist_id'
-        )->withTimestamps();
+        return $this->hasMany(Playlist::class, 'creator_id', 'id');
     }
 
     public function collaborations() : BelongsToMany {

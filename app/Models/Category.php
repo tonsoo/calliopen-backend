@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * Category
+ * 
+ * @property string $uuid
+ * @property string $name
+ * @property string $color
+ * @property File $cover
+ */
 class Category extends Model
 {
     use HasUuid;

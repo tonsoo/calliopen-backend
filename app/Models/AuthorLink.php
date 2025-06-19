@@ -6,6 +6,15 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Author Link
+ * @property Author $author
+ * @property string $name
+ * @property string $url
+ * @property File $image
+ * @property int $order
+ * @property bool $is_visible
+ */
 class AuthorLink extends Model
 {
     use HasUuid;

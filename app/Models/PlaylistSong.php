@@ -5,6 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Playlit Song
+ * 
+ * @property Playlist $playlist
+ * @property Song $song
+ * @property Client $addedBy
+ * @property int $order
+ */
 class PlaylistSong extends Model
 {
     protected $fillable = [

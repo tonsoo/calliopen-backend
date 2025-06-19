@@ -33,12 +33,13 @@ class UserPlaylistsController extends Controller
         return null;
     }
 
-    public function myPlaylists(Client $client, Request $request) : JsonResponse {
+    public function myPlaylists(Request $request) : JsonResponse {
+        $client = $request->user();
         return Response::json(PlaylistJson::collection($this->paginate($client->playlists()->with(['creator', 'cover', 'collaborators'])->getQuery(), $request)));
     }
 
     public function playlists(Client $client, Request $request) : JsonResponse {
-        $playlists = $client->id === $request->id
+        $playlists = $client->id === $request->user()->id
             ? $client->playlists()->with(['creator', 'cover', 'collaborators'])
             : $client->playlists()->where('is_public')->with(['creator', 'cover', 'collaborators']);
         return Response::json(PlaylistJson::collection($this->paginate($playlists->getQuery(), $request)));

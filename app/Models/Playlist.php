@@ -8,6 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Playlist
+ * 
+ * @property string $uuid
+ * @property Client $creator
+ * @property File $cover
+ * @property string $name
+ * @property int $total_duration
+ * @property bool $is_public
+ * @property Client[] $collaborators
+ * @property PlaylistSong[] $songEntries
+ * @property Song[] $songs
+ */
 class Playlist extends Model
 {
     use HasUuid;
