@@ -26,7 +26,17 @@ class SongsController extends Controller
         return Response::json(new SongJson($song->load('album.creator')));
     }
 
-    public function favoriteSong(Song $song) : JsonResponse {
-        return Response::json();
+    public function favoriteSong(Song $song, Request $request) : JsonResponse {
+        /** @var Client */ $client = $request->user();
+        $state = 'attached';
+        if ($client->favoriteSongs()->find($song->id)->isNotEmpty()) {
+            $client->favoriteSongs()->detach([$song->id]);
+            $state = 'removed';
+        } else {
+            $client->favoriteSongs()->attach([$song->id]);
+        }
+        return Response::json([
+            'state' => $state,
+        ]);
     }
 }

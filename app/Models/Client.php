@@ -69,4 +69,13 @@ class Client extends Authenticatable
     public function addedSongs() : HasMany {
         return $this->hasMany(PlaylistSong::class, 'added_by_id');
     }
+
+    public function favoriteSongs() : BelongsToMany {
+        return $this->belongsToMany(
+            Song::class,
+            'client_favorite_songs',
+            'client_id',
+            'song_id'
+        );
+    }
 }

@@ -889,13 +889,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Song"
+                type: object
+                properties:
+                  state:
+                    enum:
+                      - attached
+                      - removed
         401:
           $ref: "#/components/responses/UnauthorizedError"
         404:
           description: Song not found
-        409:
-          description: Song is already in favorites
 
 components:
   securitySchemes:

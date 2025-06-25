@@ -118,4 +118,13 @@ class Song extends Model
     public function categories() : BelongsToMany {
         return $this->belongsToMany(Category::class, 'song_categories');
     }
+
+    public function clientsWhoFavorited() : BelongsToMany {
+        return $this->belongsToMany(
+            Client::class,
+            'client_favorite_songs',
+            'song_id',
+            'client_id'
+        );
+    }
 }
