@@ -1220,6 +1220,8 @@ components:
         duration:
           type: integer
           description: Duration of the song in milliseconds.
+        is_favorite:
+          type: boolean
         created_at:
           type: string
           format: date-time
