@@ -29,7 +29,7 @@ class SongsController extends Controller
     public function favoriteSong(Song $song, Request $request) : JsonResponse {
         /** @var Client */ $client = $request->user();
         $state = 'attached';
-        if ($client->favoriteSongs()->find($song->id)->isNotEmpty()) {
+        if ($client->favoriteSongs()->find($song->id)) {
             $client->favoriteSongs()->detach([$song->id]);
             $state = 'removed';
         } else {

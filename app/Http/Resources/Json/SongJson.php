@@ -27,6 +27,7 @@ class SongJson extends JsonResource
             'views' => $this->view_count,
             'file' => asset('storage/'.$this->file),
             'duration' => $this->duration_ms,
+            'is_favorite' => (bool) $this->clientsWhoFavorited()->find($request->user()->id)
         ];
     }
 }
