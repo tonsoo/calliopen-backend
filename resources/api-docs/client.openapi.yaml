@@ -895,6 +895,28 @@ paths:
         404:
           description: Song not found
 
+  /songs/favorites:
+    post:
+      summary: Get user's favorite songs
+      operationId: getFavoriteSongs
+      tags:
+        - Songs
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Songs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Song"
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+        404:
+          description: Song not found
+
 components:
   securitySchemes:
     BearerAuth:
