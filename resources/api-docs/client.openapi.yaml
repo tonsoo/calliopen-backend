@@ -896,7 +896,7 @@ paths:
           description: Song not found
 
   /songs/favorites:
-    post:
+    get:
       summary: Get user's favorite songs
       operationId: getFavoriteSongs
       tags:
