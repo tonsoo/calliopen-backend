@@ -889,12 +889,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  state:
-                    enum:
-                      - attached
-                      - removed
+                $ref: "#/components/schemas/Song"
         401:
           $ref: "#/components/responses/UnauthorizedError"
         404:
