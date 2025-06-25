@@ -1217,6 +1217,7 @@ components:
           description: Duration of the song in milliseconds.
         is_favorite:
           type: boolean
+          description: "Is the song favoried by the user"
         created_at:
           type: string
           format: date-time
@@ -1237,6 +1238,7 @@ components:
         views: 12345
         file: "http://localhost:9912/storage/uploads/songs/converted/example.flac"
         duration: 180000
+        is_favorite: false
         created_at: "2025-06-15T08:00:00.000000Z"
         updated_at: "2025-06-15T08:00:00.000000Z"
 
