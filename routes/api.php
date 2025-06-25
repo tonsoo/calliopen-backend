@@ -57,6 +57,6 @@ Route::group(['middleware' => AuthenticationMiddleware::class], function() {
     Route::group(['prefix' => 'songs'], function() {
         Route::get('/', [SongsController::class, 'all'])->name('api.songs.all');
         Route::get('/{song}', [SongsController::class, 'song'])->name('api.songs.specific');
-        Route::get('/{song}/favorite', [SongsController::class, 'favoriteSong'])->name('api.songs.favorites');
+        Route::post('/{song}/favorite', [SongsController::class, 'favoriteSong'])->name('api.songs.favorites');
     });
 });
