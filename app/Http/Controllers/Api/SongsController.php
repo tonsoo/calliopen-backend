@@ -36,4 +36,8 @@ class SongsController extends Controller
         }
         return Response::json(new SongJson($song));
     }
+
+    public function allFavorites(Request $request) : JsonResponse {
+        return Response::json(SongJson::collection($request->user()->favoriteSongs));
+    }
 }
