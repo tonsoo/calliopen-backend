@@ -16,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\Rule;
 
 class UserPlaylistsController extends Controller
 {
@@ -55,9 +56,11 @@ class UserPlaylistsController extends Controller
     public function createPlaylist(Request $request) : JsonResponse {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:1', 'max:255'],
-            'is_public' => ['boolean'],
+            'is_public' => ['required', Rule::in(['true', 'false', '1', '0', 1, 0, true, false]),],
             'cover' => ['nullable', 'file', 'mimes:jpeg,png,gif,webp', 'max:5000'],
         ]);
+
+        $data['is_public'] = filter_var($data['is_public'], FILTER_VALIDATE_BOOLEAN);
 
         try {
             $playlist = null;
