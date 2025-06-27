@@ -56,7 +56,7 @@ class UserPlaylistsController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'min:1', 'max:255'],
             'is_public' => ['boolean'],
-            'cover' => ['file', 'mimes:jpeg,png,gif,webp', 'max:5000'],
+            'cover' => ['nullable', 'file', 'mimes:jpeg,png,gif,webp', 'max:5000'],
         ]);
 
         try {
@@ -64,22 +64,25 @@ class UserPlaylistsController extends Controller
             DB::transaction(function() use ($request, $data, &$playlist) {
                 $coverUpload = $request->file('cover');
 
-                $mime = $coverUpload->getClientMimeType();
-                $name = $coverUpload->getClientOriginalName();
-                $size = $coverUpload->getSize();
+                $coverFile = null;
+                if ($coverUpload) {
+                    $mime = $coverUpload->getClientMimeType();
+                    $name = $coverUpload->getClientOriginalName();
+                    $size = $coverUpload->getSize();
 
-                $coverFile = new File([
-                    'mime' => $mime,
-                    'name' => $name,
-                    'size' => $size,
-                    'file' => $coverUpload->store(File::UPLOAD_PATH),
-                ]);
-                $coverFile->save();
+                    $coverFile = new File([
+                        'mime' => $mime,
+                        'name' => $name,
+                        'size' => $size,
+                        'file' => $coverUpload->store(File::UPLOAD_PATH),
+                    ]);
+                    $coverFile->save();
+                }
 
                 $playlist = new Playlist([
                     'name' => $data['name'],
                     'is_public' => $data['is_public'],
-                    'cover_id' => $coverFile->id,
+                    'cover_id' => $coverFile?->id,
                 ]);
                 $playlist->save();
             });
