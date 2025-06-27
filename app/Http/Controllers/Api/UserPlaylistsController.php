@@ -86,6 +86,7 @@ class UserPlaylistsController extends Controller
                     'name' => $data['name'],
                     'is_public' => $data['is_public'],
                     'cover_id' => $coverFile?->id,
+                    'creator_id' => $request->user()->id
                 ]);
                 $playlist->save();
             });

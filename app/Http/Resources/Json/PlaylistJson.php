@@ -20,7 +20,7 @@ class PlaylistJson extends JsonResource
         return [
             'uuid' => $this->uuid,
             'creator' => new BasicClientJson($this->whenLoaded('creator')),
-            'cover' => $this->cover->url(),
+            'cover' => $this->cover?->url(),
             'name' => $this->name,
             'total_duration' => $this->total_duration,
             'is_public' => $this->is_public,
