@@ -2,6 +2,7 @@ services:
   php:
     build: ./docker
     container_name: "calliopen-php-{{BRANCH_NAME}}"
+    restart: unless-stopped
     environment:
       SERVER_NAME: ":80"
     volumes:

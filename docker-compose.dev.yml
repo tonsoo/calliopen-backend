@@ -3,6 +3,7 @@ services:
     env_file: .env
     build: ./docker
     container_name: "calliopen-php-{{BRANCH_NAME}}"
+    restart: unless-stopped
     environment:
       SERVER_NAME: ":80"
     volumes:
@@ -19,7 +20,7 @@ services:
   localmysql:
     image: mysql:8.4
     container_name: "calliopen-mysql-{{BRANCH_NAME}}"
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: "{{DB_PASSWORD}}"
       MYSQL_DATABASE: calliopen
@@ -33,7 +34,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: "calliopen-pma-{{BRANCH_NAME}}"
-    restart: always
+    restart: unless-stopped
     environment:
       PMA_HOST: localmysql
     depends_on:
