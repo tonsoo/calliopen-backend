@@ -68,7 +68,7 @@ class UserPlaylistsController extends Controller
                 $coverUpload = $request->file('cover');
 
                 $coverFile = null;
-                if ($coverUpload) {
+                if ($coverUpload && $coverUpload != null) {
                     $mime = $coverUpload->getClientMimeType();
                     $name = $coverUpload->getClientOriginalName();
                     $size = $coverUpload->getSize();
