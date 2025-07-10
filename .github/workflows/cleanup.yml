@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   call-deploy:
-    uses: tonsoo/deployer/.github/workflows/cleanup.yml@main
+    uses: tonsoo/deployer/.github/workflows/cleanup.yml@v1.0.0
     with:
       ssh-host: ${{ secrets.SSH_HOST }}
       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}

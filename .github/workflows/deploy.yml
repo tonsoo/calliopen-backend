@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   call-deploy:
-    uses: tonsoo/deployer/.github/workflows/deploy.laravel.yml@main
+    uses: tonsoo/deployer/.github/workflows/deploy.laravel.yml@v1.0.0
     secrets:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
